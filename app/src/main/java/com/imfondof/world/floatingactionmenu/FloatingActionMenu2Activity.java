@@ -1,33 +1,22 @@
 package com.imfondof.world.floatingactionmenu;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.imfondof.world.R;
-import com.imfondof.world.floatingactionmenu.springfloatingactionmenu.MenuItemView;
-import com.imfondof.world.floatingactionmenu.springfloatingactionmenu.OnMenuActionListener;
-import com.imfondof.world.floatingactionmenu.springfloatingactionmenu.SpringFloatingActionMenu;
 import com.melnykov.fab.FloatingActionButton;
+import com.tiancaicc.springfloatingactionmenu.MenuItemView;
+import com.tiancaicc.springfloatingactionmenu.OnMenuActionListener;
+import com.tiancaicc.springfloatingactionmenu.SpringFloatingActionMenu;
 
-/**
- * 项目来自：https://github.com/lusccc/SpringFloatingActionMenu
- * 由于导入com.tiancaicc.springfloatingactionmenu:library:0.0.2，部分代码不可用
- * 创建了springfloatingactionmenu与tumblr两个目录，代码均来自github
- * <p>
- * 炫酷的按钮
- */
-public class FloatingActionMenuActivity extends AppCompatActivity implements View.OnClickListener {
-
+public class FloatingActionMenu2Activity extends AppCompatActivity implements View.OnClickListener {
     private static int[] frameAnimRes = new int[]{
             R.mipmap.compose_anim_1,
             R.mipmap.compose_anim_2,
@@ -59,43 +48,41 @@ public class FloatingActionMenuActivity extends AppCompatActivity implements Vie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_floating_action_menu);
+        setContentView(R.layout.activity_floating_action_menu2);
 
         createFabFrameAnim();
         createFabReverseFrameAnim();
 
-        //必须手动创建FAB, 并设置属性
         final FloatingActionButton fab = new FloatingActionButton(this);
         fab.setType(FloatingActionButton.TYPE_NORMAL);
         fab.setImageDrawable(frameAnim);
-        //ab.setImageResource(android.R.drawable.ic_dialog_email);
+//        fab.setImageResource(android.R.drawable.ic_dialog_email);
         fab.setColorPressedResId(R.color.colorPrimary);
         fab.setColorNormalResId(R.color.fab);
         fab.setColorRippleResId(R.color.text_color);
         fab.setShadow(true);
         springFloatingActionMenu = new SpringFloatingActionMenu.Builder(this)
                 .fab(fab)
-                //添加菜单按钮参数依次是背景颜色,图标,标签,标签的颜色,点击事件
                 .addMenuItem(R.color.photo, R.mipmap.ic_messaging_posttype_photo, "Photo", R.color.text_color, this)
-                .addMenuItem(R.color.link, R.mipmap.ic_messaging_posttype_link, "Link", R.color.text_color, this)
                 .addMenuItem(R.color.chat, R.mipmap.ic_messaging_posttype_chat, "Chat", R.color.text_color, this)
-                .addMenuItem(R.color.audio, R.mipmap.ic_messaging_posttype_audio, "Audio", R.color.text_color, this)
-                .addMenuItem(R.color.video, R.mipmap.ic_messaging_posttype_video, "Video", R.color.text_color, this)
-                .addMenuItem(R.color.text, R.mipmap.ic_messaging_posttype_text, "Text", R.color.text_color, this)
                 .addMenuItem(R.color.quote, R.mipmap.ic_messaging_posttype_quote, "Quote", R.color.text_color, this)
-                .animationType(SpringFloatingActionMenu.ANIMATION_TYPE_TUMBLR)//设置动画类型
-                .revealColor(R.color.colorPrimary)//设置reveal效果的颜色
-                .gravity(Gravity.RIGHT | Gravity.BOTTOM)//设置FAB的位置,只支持底部居中和右下角的位置
+                .addMenuItem(R.color.link, R.mipmap.ic_messaging_posttype_link, "Link", R.color.text_color, this)
+                .addMenuItem(R.color.audio, R.mipmap.ic_messaging_posttype_audio, "Audio", R.color.text_color, this)
+                .addMenuItem(R.color.text, R.mipmap.ic_messaging_posttype_text, "Text", R.color.text_color, this)
+                .addMenuItem(R.color.video, R.mipmap.ic_messaging_posttype_video, "Video", R.color.text_color, this)
+                .animationType(SpringFloatingActionMenu.ANIMATION_TYPE_BLOOM)
+                .revealColor(R.color.colorPrimary)
+                .gravity(Gravity.RIGHT | Gravity.BOTTOM)
                 .onMenuActionListner(new OnMenuActionListener() {
                     @Override
-                    public void onMenuOpen() {//设置FAB的icon当菜单打开的时候
+                    public void onMenuOpen() {
                         fab.setImageDrawable(frameAnim);
                         frameReverseAnim.stop();
                         frameAnim.start();
                     }
 
                     @Override
-                    public void onMenuClose() {//设置回FAB的图标当菜单关闭的时候
+                    public void onMenuClose() {
                         fab.setImageDrawable(frameReverseAnim);
                         frameAnim.stop();
                         frameReverseAnim.start();
@@ -133,23 +120,6 @@ public class FloatingActionMenuActivity extends AppCompatActivity implements Vie
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.bloom_style:
-                startActivity(new Intent(this, FloatingActionMenu2Activity.class));
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
