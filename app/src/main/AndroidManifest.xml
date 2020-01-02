@@ -11,6 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".mvp.TasksActivity"
+            android:theme="@style/AppTheme.OverlapSystemBar"></activity>
         <activity
             android:name=".floatingactionmenu.FloatingActionMenu2Activity"
             android:theme="@style/AppTheme2" />

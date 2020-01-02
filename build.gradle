@@ -4,6 +4,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
         maven {
             url "https://jitpack.io"
         }
@@ -30,4 +31,11 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    guavaVersion="28.2-jre"
+    roomVersion = '2.1.0'
+    materialVersion = '1.0.0'
+    espressoVersion = '3.1.1'
 }
