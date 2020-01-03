@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="@string/rank"
         android:textAllCaps="false"
-        tools:ignore="MissingConstraints"/>
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/btn_float"
@@ -29,9 +29,14 @@
         android:id="@+id/btn_mvp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="mvp
-"
-        app:layout_constraintTop_toBottomOf="@+id/btn_float"
+        android:text="mvp"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/btn_mvvm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="mvvm"
         tools:ignore="MissingConstraints" />
 
 </LinearLayout>
