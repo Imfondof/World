@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.imfondof.world.retrofit.RetrofitActivity;
 import com.imfondof.world.floatingactionmenu.FloatingActionMenuActivity;
 import com.imfondof.world.mvp.TasksActivity;
 import com.imfondof.world.mvvm.MVVMActivity;
@@ -14,7 +15,7 @@ import com.imfondof.world.rank.RankActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    Button rank,btn_float,btn_mvp,btn_mvvm;
+    Button rank,btn_float,btn_mvp,btn_mvvm,btn_retrofit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,11 +25,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_float = findViewById(R.id.btn_float);
         btn_mvp = findViewById(R.id.btn_mvp);
         btn_mvvm = findViewById(R.id.btn_mvvm);
+        btn_retrofit = findViewById(R.id.btn_retrofit);
 
         rank.setOnClickListener(this);
         btn_float.setOnClickListener(this);
         btn_mvp.setOnClickListener(this);
         btn_mvvm.setOnClickListener(this);
+        btn_retrofit.setOnClickListener(this);
     }
 
     @Override
@@ -49,6 +52,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_mvvm:
                 Intent intentMvvm = new Intent(this, MVVMActivity.class);
                 startActivity(intentMvvm);
+                break;
+            case R.id.btn_retrofit:
+                Intent intentRetrofit = new Intent(this, RetrofitActivity.class);
+                startActivity(intentRetrofit);
                 break;
         }
     }

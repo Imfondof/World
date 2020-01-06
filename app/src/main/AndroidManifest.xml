@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.imfondof.world">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".mvvm.MVVMActivity"></activity>
+        <activity android:name=".retrofit.RetrofitActivity"></activity>
+        <activity android:name=".mvvm.MVVMActivity" />
         <activity
             android:name=".mvp.TasksActivity"
             android:theme="@style/AppTheme.OverlapSystemBar" />
