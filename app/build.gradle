@@ -48,7 +48,11 @@ dependencies {
     androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:$espressoVersion"
     implementation "androidx.test.espresso:espresso-idling-resource:$espressoVersion"
 
+    //retrofit
     implementation "io.reactivex.rxjava2:rxjava:2.1.0"
     implementation "com.squareup.retrofit2:retrofit:2.2.0"
     implementation "com.squareup.retrofit2:converter-gson:2.0.2"
+
+    //BaseRecyclerViewAdapterHelper
+    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.40"
 }
