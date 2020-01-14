@@ -21,8 +21,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * zhaishuo on 2020/1/9 15:57
- * description:
+ * Imfondof on 2020/1/9 15:57
+ *
+ * OkHttp的封装类
  */
 public class OkHttpClientManager {
     private static OkHttpClientManager mInstance;
