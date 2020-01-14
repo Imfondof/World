@@ -35,7 +35,7 @@ public class RetrofitActivity extends AppCompatActivity {
         UserMgService userMgService = retrofit.create(UserMgService.class);
 
         //调用登录 login方法
-        Call<UserInfoModel> call = userMgService.login("woaigeny", "woaigeny123");
+        Call<UserInfoModel> call = userMgService.login("username", "password");
 
         //发送同步请求(需要自己代码开启子线程)
 //        new Thread(new Runnable() {
