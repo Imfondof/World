@@ -1,7 +1,7 @@
 package com.imfondof.world.mvvm.bean;
 
 /**
- * zhaishuo on 2020/1/3 10:09
+ * Imfondof on 2020/1/3 10:09
  * description:
  */
 public class Account {

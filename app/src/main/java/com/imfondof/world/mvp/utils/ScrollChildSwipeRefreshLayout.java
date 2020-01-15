@@ -8,7 +8,7 @@ import androidx.core.view.ViewCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**
- * zhaishuo on 2019/12/31 10:24
+ * Imfondof on 2019/12/31 10:24
  * description:
  */
 public class ScrollChildSwipeRefreshLayout extends SwipeRefreshLayout {

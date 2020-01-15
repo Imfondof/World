@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 /**
- * zhaishuo on 2019/12/18 10:02
+ * Imfondof on 2019/12/18 10:02
  * description:
  */
 public abstract class CommonAdapter<E> extends BaseAdapter implements

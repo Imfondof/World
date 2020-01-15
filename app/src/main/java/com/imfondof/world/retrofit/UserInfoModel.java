@@ -3,7 +3,7 @@ package com.imfondof.world.retrofit;
 import java.util.List;
 
 /**
- * zhaishuo on 2020/1/6 10:02
+ * Imfondof on 2020/1/6 10:02
  * description:
  */
 public class UserInfoModel {

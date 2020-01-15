@@ -6,7 +6,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
 /**
- * zhaishuo on 2020/1/6 9:46
+ * Imfondof on 2020/1/6 9:46
  * description:
  */
 public interface UserMgService {

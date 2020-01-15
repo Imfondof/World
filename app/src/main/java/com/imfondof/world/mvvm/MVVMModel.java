@@ -6,7 +6,7 @@ import com.imfondof.world.mvvm.callback.CallBack;
 import java.util.Random;
 
 /**
- * zhaishuo on 2020/1/3 10:06
+ * Imfondof on 2020/1/3 10:06
  * description:
  */
 public class MVVMModel {

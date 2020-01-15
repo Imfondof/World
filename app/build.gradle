@@ -55,4 +55,6 @@ dependencies {
 
     //BaseRecyclerViewAdapterHelper
     implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.40"
+
+    api "com.nineoldandroids:library:2.4.0"
 }

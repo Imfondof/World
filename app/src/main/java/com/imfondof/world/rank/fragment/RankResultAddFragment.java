@@ -16,7 +16,7 @@ import com.imfondof.world.base.BaseFragment;
 import com.imfondof.world.rank.utils.SQLiteDBUtil;
 
 /**
- * zhaishuo on 2019/12/18 10:59
+ * Imfondof on 2019/12/18 10:59
  * description:
  */
 public class RankResultAddFragment extends BaseFragment implements OnClickListener {

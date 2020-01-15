@@ -30,7 +30,7 @@ import com.imfondof.world.rank.bean.Rank;
 import com.imfondof.world.rank.utils.SQLiteDBUtil;
 
 /**
- * zhaishuo on 2019/12/18 10:57
+ * Imfondof on 2019/12/18 10:57
  * description:
  */
 public class RankResultFragment extends BaseFragment implements OnClickListener {
