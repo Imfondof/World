@@ -34,7 +34,6 @@ public class FakeStatusBarView extends View {
             statusBarHeight = StatusBarUtil.getHeight(this.getContext());
             enableCompat = StatusBarUtil.enableCompat();
         }
-
     }
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

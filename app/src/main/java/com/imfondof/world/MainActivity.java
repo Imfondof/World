@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 import com.imfondof.world.retrofit.RetrofitActivity;
@@ -12,6 +14,7 @@ import com.imfondof.world.floatingactionmenu.FloatingActionMenuActivity;
 import com.imfondof.world.mvp.TasksActivity;
 import com.imfondof.world.mvvm.MVVMActivity;
 import com.imfondof.world.rank.RankActivity;
+import com.imfondof.world.utils.StatusBarUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,6 +24,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //配合xml的fakeStatusBarView，动态设置字体的颜色true为黑  false为白
+        //（此方法应封装为基类的抽象方法，子类继承重写）
+        StatusBarUtil.transparentStatusbarAndLayoutInsert(this, true);
 
         btn_rank = findViewById(R.id.btn_rank);
         setOnClick(this, btn_rank, R.id.btn_rank, RankActivity.class);

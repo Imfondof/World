@@ -26,7 +26,8 @@
             android:name=".floatingactionmenu.FloatingActionMenuActivity"
             android:theme="@style/AppTheme2" />
         <activity android:name=".rank.RankActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppThemeNotitle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
