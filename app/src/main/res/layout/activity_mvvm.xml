@@ -7,7 +7,7 @@
 
         <variable
             name="viewmedel"
-            type="com.imfondof.world.mvvm.MVVMViewModel" />
+            type="com.imfondof.world.other.mvvm.MVVMViewModel" />
     </data>
 
     <LinearLayout
@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        tools:context=".mvvm.MVVMActivity">
+        tools:context=".other.mvvm.MVVMActivity">
 
         <EditText
             android:id="@+id/edit"

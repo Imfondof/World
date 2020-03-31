@@ -8,7 +8,7 @@ import android.view.Window;
 import androidx.annotation.ColorInt;
 
 /**
- * zhaishuo on 2020/1/16 9:53
+ * Imfondof on 2020/1/16 9:53
  * @see com.imfondof.world.utils.SpaceDecoration
  */
 public class StatusBarUtil {

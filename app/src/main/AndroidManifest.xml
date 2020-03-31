@@ -14,10 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".retrofit.RetrofitActivity"></activity>
-        <activity android:name=".mvvm.MVVMActivity" />
+        <activity android:name=".other.retrofit.RetrofitActivity"></activity>
+        <activity android:name=".other.mvvm.MVVMActivity" />
         <activity
-            android:name=".mvp.TasksActivity"
+            android:name=".other.mvp.TasksActivity"
             android:theme="@style/AppTheme.OverlapSystemBar" />
         <activity
             android:name=".floatingactionmenu.FloatingActionMenu2Activity"

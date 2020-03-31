@@ -1,18 +1,18 @@
 package com.imfondof.world;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
+import android.view.KeyEvent;
 import android.widget.Button;
 
-import com.imfondof.world.retrofit.RetrofitActivity;
+import com.imfondof.world.other.retrofit.RetrofitActivity;
 import com.imfondof.world.floatingactionmenu.FloatingActionMenuActivity;
-import com.imfondof.world.mvp.TasksActivity;
-import com.imfondof.world.mvvm.MVVMActivity;
+import com.imfondof.world.other.mvp.TasksActivity;
+import com.imfondof.world.other.mvvm.MVVMActivity;
 import com.imfondof.world.rank.RankActivity;
 import com.imfondof.world.utils.StatusBarUtil;
 
@@ -43,5 +43,15 @@ public class MainActivity extends AppCompatActivity {
             Intent intentRetrofit = new Intent(context, aClass);
             startActivity(intentRetrofit);
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // 不退出程序，进入后台
+            moveTaskToBack(true);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

@@ -7,7 +7,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 /**
- * zhaishuo on 2020/1/16 9:51
+ * Imfondof on 2020/1/16 9:51
  * 状态栏
  */
 public class FakeStatusBarView extends View {

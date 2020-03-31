@@ -46,6 +46,14 @@
     <color name="header">#58567D</color>
     <color name="grgray">#686868</color>
     <color name="white">#FFFFFF</color>
+
+    <!-- 数字颜色 -->
+    <color name="color_28dd88">#28dd88</color>
+    <color name="color_333333">#333333</color>
+    <color name="color_666666">#666666</color>
+    <color name="color_999999">#999999</color>
+    <color name="color_eeeeee">#eeeeee</color>
+
     <!-- 白色 -->
     <color name="ivory">#FFFFF0</color>
     <!-- 象牙色 -->
