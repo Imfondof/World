@@ -1,35 +1,34 @@
 package com.imfondof.world.other.http;
 
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
 import com.google.gson.Gson;
-import com.google.gson.internal.$Gson$Types;
+import com.google.gson.GsonBuilder;
+import com.imfondof.world.other.net.ResultCallback;
+import com.imfondof.world.utils.LogUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.Modifier;
 import java.net.FileNameMap;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Cookie;
-import okhttp3.CookieJar;
 import okhttp3.FormBody;
 import okhttp3.Headers;
-import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -40,32 +39,158 @@ import okhttp3.Response;
  * OkHttp的封装类:https://blog.csdn.net/lmj623565791/article/details/47911083
  */
 public class OkHttpClientManager {
+    private static final String TAG = "NetFactory_OkHM";
+    public static final int DEF_TIME_OUT = 30;
     private static OkHttpClientManager mInstance;
     private OkHttpClient mOkHttpClient;
+    private OkHttpClient mOKGetHttpClient;
     private Handler mHandler;
     private Gson mGson;
 
     private OkHttpClientManager() {
-        mOkHttpClient=new OkHttpClient.Builder()//添加cookie
-                .cookieJar(new CookieJar() {
-                    private final HashMap<HttpUrl, List<Cookie>> cookieStore = new HashMap<>();
-                    @Override
-                    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-                        cookieStore.put(url, cookies);
-                    }
-
-                    @Override
-                    public List<Cookie> loadForRequest(HttpUrl url) {
-                        List<Cookie> cookies = cookieStore.get(url);
-                        return cookies != null ? cookies : new ArrayList<Cookie>();
-                    }
-                })
+        mOkHttpClient = new OkHttpClient.Builder()//添加cookie
+                .retryOnConnectionFailure(false)
+                .protocols(Collections.singletonList(Protocol.HTTP_1_1))
+                .readTimeout(DEF_TIME_OUT, TimeUnit.SECONDS)
+                .writeTimeout(DEF_TIME_OUT, TimeUnit.SECONDS)
                 .build();
-        //cookie
         mHandler = new Handler(Looper.getMainLooper());
-        mGson = new Gson();
+
+        OkHttpClient.Builder builderGet = new OkHttpClient.Builder().retryOnConnectionFailure(true)
+                .readTimeout(DEF_TIME_OUT, TimeUnit.SECONDS)
+                .connectTimeout(DEF_TIME_OUT, TimeUnit.SECONDS)
+                .writeTimeout(DEF_TIME_OUT, TimeUnit.SECONDS);
+
+        mOKGetHttpClient = builderGet.build();
+        int sdk = Build.VERSION.SDK_INT;
+        if (sdk >= 23) {
+            GsonBuilder gsonBuilder = new GsonBuilder().excludeFieldsWithModifiers(
+                    Modifier.FINAL,
+                    Modifier.TRANSIENT,
+                    Modifier.STATIC);
+            mGson = gsonBuilder.create();
+        } else {
+            mGson = new Gson();
+        }
     }
 
+    public Handler getHandler() {
+        return mHandler;
+    }
+
+    /**
+     * 普通请求
+     *
+     * @return
+     */
+    public OkHttpClient getOkHttpClient() {
+        return mOkHttpClient;
+    }
+
+    /**
+     * get请求
+     *
+     * @return
+     */
+    public OkHttpClient getOkHttpGetClient() {
+        return mOKGetHttpClient;
+    }
+
+    /**
+     * 异步请求
+     *
+     * @param request
+     * @param callback
+     */
+    public void execute(final Request request, ResultCallback callback) {
+        if (callback == null) callback = ResultCallback.DEFAULT_RESULT_CALLBACK;
+        final ResultCallback resCallBack = callback;
+        if ("GET".equals(request.method())) {
+            mOKGetHttpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(final Call call, final IOException e) {
+                    //TODO when cancel , should do?
+                    LogUtils.d(TAG, "" + e.toString());
+                    sendFailResultCallback(call.request(), e, resCallBack);
+                }
+
+                @Override
+                public void onResponse(Call call, final Response response) {
+                    if (response.code() >= 400 && response.code() <= 599) {
+                        LogUtils.d(TAG, "" + response);
+                        try {
+                            sendFailResultCallback(request, new RuntimeException(response.body().string()), resCallBack);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return;
+                    }
+
+                    try {
+                        final String string = response.body().string();
+                        if (resCallBack.mType == String.class) {
+                            sendSuccessResultCallback(string, resCallBack);
+                        } else {
+                            Object o = mGson.fromJson(string, resCallBack.mType);
+                            sendSuccessResultCallback(o, resCallBack);
+                        }
+                    } catch (Exception e) {
+                        sendFailResultCallback(response.request(), e, resCallBack);
+                    } catch (OutOfMemoryError e) {
+                        sendSuccessResultCallback("", resCallBack);
+                    }
+                }
+            });
+        } else {
+            mOkHttpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(final Call call, final IOException e) {
+                    //TODO when cancel , should do?
+                    sendFailResultCallback(call.request(), e, resCallBack);
+                }
+
+                @Override
+                public void onResponse(Call call, final Response response) {
+                    if (response.code() >= 400 && response.code() <= 599) {
+                        try {
+                            sendFailResultCallback(request, new RuntimeException(call.request().url().toString() + "\n" + response.body().string()), resCallBack);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return;
+                    }
+
+                    try {
+                        final String string = response.body().string();
+                        if (resCallBack.mType == String.class) {
+                            sendSuccessResultCallback(string, resCallBack);
+                        } else {
+                            Object o = mGson.fromJson(string, resCallBack.mType);
+                            sendSuccessResultCallback(o, resCallBack);
+                        }
+                    } catch (Exception e) {
+                        sendFailResultCallback(response.request(), e, resCallBack);
+                    } catch (OutOfMemoryError e) {
+                        sendSuccessResultCallback("", resCallBack);
+                    }
+                }
+            });
+        }
+    }
+
+    public void sendFailResultCallback(final Request request, final Exception e, final ResultCallback callback) {
+        if (callback == null) return;
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onError(request, e);
+            }
+        });
+    }
+
+
+    //***********************************************************************
     public static OkHttpClientManager getInstance() {
         if (mInstance == null) {
             synchronized (OkHttpClientManager.class) {
@@ -209,46 +334,36 @@ public class OkHttpClientManager {
                 byte[] buf = new byte[2048];
                 int len = 0;
                 FileOutputStream fos = null;
-                try
-                {
+                try {
                     is = response.body().byteStream();
                     File file = new File(destFileDir, getFileName(url));
                     fos = new FileOutputStream(file);
-                    while ((len = is.read(buf)) != -1)
-                    {
+                    while ((len = is.read(buf)) != -1) {
                         fos.write(buf, 0, len);
                     }
                     fos.flush();
                     //如果下载文件成功，第一个参数为文件的绝对路径
                     sendSuccessResultCallback(file.getAbsolutePath(), callback);
-                } catch (IOException e)
-                {
+                } catch (IOException e) {
                     sendFailedStringCallback(response.request(), e, callback);
-                } finally
-                {
-                    try
-                    {
+                } finally {
+                    try {
                         if (is != null) is.close();
-                    } catch (IOException e)
-                    {
+                    } catch (IOException e) {
                     }
-                    try
-                    {
+                    try {
                         if (fos != null) fos.close();
-                    } catch (IOException e)
-                    {
+                    } catch (IOException e) {
                     }
                 }
             }
         });
     }
-    private void sendFailedStringCallback(final Request request, final Exception e, final ResultCallback callback)
-    {
-        mHandler.post(new Runnable()
-        {
+
+    private void sendFailedStringCallback(final Request request, final Exception e, final ResultCallback callback) {
+        mHandler.post(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 if (callback != null)
                     callback.onError(request, e);
             }
@@ -307,7 +422,6 @@ public class OkHttpClientManager {
     }
 
 
-
     private Request buildPostRequest(String url, Param[] params) {
         if (params == null) {
             params = new Param[0];
@@ -323,26 +437,26 @@ public class OkHttpClientManager {
                 .build();
     }
 
-    public static abstract class ResultCallback<T> {
-        Type mType;
-
-        public ResultCallback() {
-            mType = getSuperclassTypeParameter(getClass());
-        }
-
-        static Type getSuperclassTypeParameter(Class<?> subclass) {
-            Type superclass = subclass.getGenericSuperclass();
-            if (superclass instanceof Class) {
-                throw new RuntimeException("Missing type parameter.");
-            }
-            ParameterizedType parameterized = (ParameterizedType) superclass;
-            return $Gson$Types.canonicalize(parameterized.getActualTypeArguments()[0]);
-        }
-
-        public abstract void onError(Request request, Exception e);
-
-        public abstract void onResponse(T response);
-    }
+//    public static abstract class ResultCallback<T> {
+//        Type mType;
+//
+//        public ResultCallback() {
+//            mType = getSuperclassTypeParameter(getClass());
+//        }
+//
+//        static Type getSuperclassTypeParameter(Class<?> subclass) {
+//            Type superclass = subclass.getGenericSuperclass();
+//            if (superclass instanceof Class) {
+//                throw new RuntimeException("Missing type parameter.");
+//            }
+//            ParameterizedType parameterized = (ParameterizedType) superclass;
+//            return $Gson$Types.canonicalize(parameterized.getActualTypeArguments()[0]);
+//        }
+//
+//        public abstract void onError(Request request, Exception e);
+//
+//        public abstract void onResponse(T response);
+//    }
 
     public static class Param {
         String key;
@@ -394,6 +508,7 @@ public class OkHttpClientManager {
     private void sendSuccessResultCallback(final Object object, ResultCallback callback) {
         mHandler.post(() -> {
             if (callback != null) {
+                LogUtils.d(TAG, object.toString());
                 callback.onResponse(object);
             }
         });
@@ -428,34 +543,28 @@ public class OkHttpClientManager {
         getInstance()._postAsyn(url, callback, params);
     }
 
-    public static Response post(String url, Param... params) throws IOException
-    {
+    public static Response post(String url, Param... params) throws IOException {
         return getInstance()._post(url, params);
     }
 
-    public static String postAsString(String url, Param... params) throws IOException
-    {
+    public static String postAsString(String url, Param... params) throws IOException {
         return getInstance()._postAsString(url, params);
     }
 
-    public static void postAsyn(String url, final ResultCallback callback, Map<String, String> params)
-    {
+    public static void postAsyn(String url, final ResultCallback callback, Map<String, String> params) {
         getInstance()._postAsyn(url, callback, params);
     }
 
 
-    public static Response post(String url, File[] files, String[] fileKeys, Param... params) throws IOException
-    {
+    public static Response post(String url, File[] files, String[] fileKeys, Param... params) throws IOException {
         return getInstance()._post(url, files, fileKeys, params);
     }
 
-    public static Response post(String url, File file, String fileKey) throws IOException
-    {
+    public static Response post(String url, File file, String fileKey) throws IOException {
         return getInstance()._post(url, file, fileKey);
     }
 
-    public static Response post(String url, File file, String fileKey, Param... params) throws IOException
-    {
+    public static Response post(String url, File file, String fileKey, Param... params) throws IOException {
         return getInstance()._post(url, file, fileKey, params);
     }
 
